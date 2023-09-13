@@ -13,9 +13,11 @@ class PGame extends FlameGame {
   @override
   Future<void> onLoad() async {
     await images.loadAll([
-      'Tile_02.png',
+      'ground.png',
       'hoot_walk.png',
-      'Gold_Coin.png',
+      'gold_coin.png',
+      'heart.png',
+      'platform.png',
     ]);
 
   cameraComponent = CameraComponent(world: world);
