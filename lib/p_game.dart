@@ -6,6 +6,7 @@ import 'managers/segment_manager.dart';
 import 'objects/coin.dart';
 import 'objects/ground.dart';
 import 'objects/platform.dart';
+import 'package:flutter/material.dart';
 
 class PGame extends FlameGame {
   PGame();
@@ -15,25 +16,32 @@ class PGame extends FlameGame {
 
   final world = World();
   late final CameraComponent cameraComponent;
+  late double lastBlockXPosition = 0.0;
+  late UniqueKey lastBlockKey;
+
+  @override
+  Color backgroundColor() {
+    return const Color.fromARGB(255, 173, 223, 247);
+  }
 
   @override
   Future<void> onLoad() async {
     await images.loadAll([
       'ground.png',
       'hoot_walk.png',
-      'gold_coin.png',
+      'coin.png',
       'heart.png',
       'platform.png',
     ]);
 
-  cameraComponent = CameraComponent(world: world);
-  cameraComponent.viewfinder.anchor = Anchor.topLeft;
-  addAll([cameraComponent, world]);
+    cameraComponent = CameraComponent(world: world);
+    cameraComponent.viewfinder.anchor = Anchor.topLeft;
+    addAll([cameraComponent, world]);
 
-  initializeGame();
+    initializeGame();
   }
 
-    void initializeGame() {
+  void initializeGame() {
     // Assume that size.x < 3200
     final segmentsToLoad = (size.x / 640).ceil();
     segmentsToLoad.clamp(0, segments.length);
@@ -42,7 +50,7 @@ class PGame extends FlameGame {
       loadGameSegments(i, (640 * i).toDouble());
     }
 
-      _hoot = HootPlayer(
+    _hoot = HootPlayer(
       position: Vector2(128, canvasSize.y - 70),
     );
     world.add(_hoot);
@@ -52,10 +60,22 @@ class PGame extends FlameGame {
     for (final block in segments[segmentIndex]) {
       switch (block.blockType) {
         case Ground:
+          add(Ground(
+            gridPosition: block.gridPosition,
+            xOffset: xPositionOffset,
+          ));
           break;
         case Platform:
+          add(Platform(
+            gridPosition: block.gridPosition,
+            xOffset: xPositionOffset,
+          ));
           break;
         case Coin:
+          add(Coin(
+            gridPosition: block.gridPosition,
+            xOffset: xPositionOffset,
+          ));
           break;
       }
     }
